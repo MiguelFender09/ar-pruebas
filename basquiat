@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>basquiat en tu pared</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.1.0/dist/model-viewer.min.js"></script>
+<style>
+  :root {
+    --tinta: #1b1d1a;
+    --papel: #f6f5f1;
+    --linea: #d8d6cd;
+    --apagado: #6e6c64;
+    --acento: #2f5d50;
+    --alerta: #8a4b1f;
+    --radio: 10px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--papel);
+    color: var(--tinta);
+    font: 400 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 560px; margin: 0 auto; padding: 24px 20px 64px; }
+  h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .medidas { color: var(--apagado); font-size: 14px; margin: 0 0 20px; }
+  model-viewer {
+    width: 100%;
+    height: 380px;
+    background: #fff;
+    border: 1px solid var(--linea);
+    border-radius: var(--radio);
+    --poster-color: #fff;
+  }
+  .barra {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: transparent;
+    overflow: hidden;
+  }
+  .barra .relleno {
+    height: 100%;
+    width: 0;
+    background: var(--acento);
+    transition: width 0.2s ease-out;
+  }
+  .barra.completa { opacity: 0; transition: opacity 0.4s 0.2s; }
+  #ar-btn {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 0;
+    border-radius: 999px;
+    background: var(--tinta);
+    color: #fff;
+    font: 500 15px/1 system-ui, sans-serif;
+    padding: 14px 22px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  #ar-btn:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+  .aviso {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--linea);
+    border-left: 3px solid var(--alerta);
+    border-radius: 0;
+    background: #fff;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .aviso[hidden] { display: none; }
+  .aviso strong { font-weight: 600; }
+  details {
+    margin-top: 24px;
+    border: 1px solid var(--linea);
+    border-radius: var(--radio);
+    background: #fff;
+  }
+  summary { padding: 12px 16px; cursor: pointer; font-size: 14px; font-weight: 500; }
+  dl { margin: 0; padding: 0 16px 16px; font-size: 13px; }
+  dt { color: var(--apagado); margin-top: 10px; }
+  dd { margin: 2px 0 0; font-family: ui-monospace, "SF Mono", Menlo, monospace; word-break: break-word; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Cuadro de basquiat</h1>
+  <p class="medidas">60 × 40 cm · se coloca a escala real sobre la pared</p>
+
+  <model-viewer
+    id="visor"
+    src="cuadro-prueba.glb"
+    alt="Cuadro enmarcado de 60 por 90 centímetros"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    ar-scale="fixed"
+    ar-placement="wall"
+    camera-controls
+    touch-action="pan-y"
+    shadow-intensity="1"
+    environment-image="neutral"
+    loading="eager">
+    <div class="barra" slot="progress-bar"><div class="relleno" id="relleno"></div></div>
+    <button id="ar-btn" slot="ar-button">Ver en tu pared</button>
+  </model-viewer>
+
+  <p class="aviso" id="sin-ar" hidden>
+    <strong>Este dispositivo no puede abrir la vista en AR.</strong>
+    Abre la página desde un iPhone o un Android reciente, sobre HTTPS.
+    Mientras tanto puedes girar el modelo con el dedo.
+  </p>
+
+  <details>
+    <summary>Diagnóstico del dispositivo</summary>
+    <dl>
+      <dt>Contexto seguro (HTTPS)</dt><dd id="d-https">—</dd>
+      <dt>WebXR disponible</dt><dd id="d-webxr">—</dd>
+      <dt>AR Quick Look (rel="ar")</dt><dd id="d-quicklook">—</dd>
+      <dt>model-viewer puede activar AR</dt><dd id="d-canar">—</dd>
+      <dt>Modo elegido</dt><dd id="d-modo">—</dd>
+      <dt>Estado de la sesión</dt><dd id="d-estado">—</dd>
+    </dl>
+  </details>
+</main>
+
+<script type="module">
+  const visor = document.getElementById('visor');
+  const aviso = document.getElementById('sin-ar');
+  const set = (id, v) => document.getElementById(id).textContent = v;
+
+  const quickLook = (() => {
+    const a = document.createElement('a');
+    return !!(a.relList && a.relList.supports && a.relList.supports('ar'));
+  })();
+
+  set('d-https', window.isSecureContext ? 'sí' : 'no — AR requiere HTTPS');
+  set('d-quicklook', quickLook ? 'sí' : 'no');
+
+  if (navigator.xr && navigator.xr.isSessionSupported) {
+    navigator.xr.isSessionSupported('immersive-ar')
+      .then(ok => set('d-webxr', ok ? 'sí (immersive-ar)' : 'API presente, sesión no soportada'))
+      .catch(() => set('d-webxr', 'error al consultar'));
+  } else {
+    set('d-webxr', 'no expuesta por el navegador');
+  }
+
+  // canActivateAR sólo es confiable después de que el componente carga.
+  const revisar = () => {
+    const puede = visor.canActivateAR;
+    set('d-canar', puede ? 'sí' : 'no');
+    aviso.hidden = puede;
+    document.getElementById('ar-btn').style.display = puede ? '' : 'none';
+  };
+
+  visor.addEventListener('load', revisar);
+  setTimeout(revisar, 2500); // red de seguridad si el modelo tarda o falla
+
+  visor.addEventListener('ar-status', e => {
+    set('d-estado', e.detail.status);
+    set('d-modo', visor.arMode || '—');
+    if (e.detail.status === 'failed') {
+      aviso.hidden = false;
+      aviso.innerHTML = '<strong>La sesión de AR no pudo iniciar.</strong> Revisa los permisos de cámara del navegador.';
+    }
+  });
+
+  const barra = document.querySelector('.barra');
+  const relleno = document.getElementById('relleno');
+  visor.addEventListener('progress', e => {
+    const p = e.detail.totalProgress;
+    relleno.style.width = (p * 100) + '%';
+    barra.classList.toggle('completa', p === 1);
+  });
+
+  visor.addEventListener('error', e => {
+    set('d-estado', 'error al cargar el modelo');
+    console.error('model-viewer:', e.detail);
+  });
+</script>
+</body>
+</html>
