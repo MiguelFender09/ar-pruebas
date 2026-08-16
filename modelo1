@@ -93,7 +93,7 @@
 <body>
 <main>
   <h1>Cuadro de modelo1</h1>
-  <p class="medidas">60 × 40 cm · se coloca a escala real sobre la pared</p>
+  <p class="medidas">60 × 81 cm · se coloca a escala real sobre la pared</p>
 
   <model-viewer
     id="visor"
