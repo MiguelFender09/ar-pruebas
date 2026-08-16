@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>basquiat en tu pared</title>
+<title>modelo 1 en tu pared</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.1.0/dist/model-viewer.min.js"></script>
 <style>
@@ -92,7 +92,7 @@
 </head>
 <body>
 <main>
-  <h1>Cuadro de basquiat</h1>
+  <h1>Cuadro de modelo1</h1>
   <p class="medidas">60 × 40 cm · se coloca a escala real sobre la pared</p>
 
   <model-viewer
