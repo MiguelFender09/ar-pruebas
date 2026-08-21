@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Billboard AR</title>
+  <script type="module"
+    src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+  <style>
+    body { margin:0; font-family:system-ui,sans-serif; background:#111; color:#eee; }
+    model-viewer { width:100%; height:80vh; background:#222; }
+    .info { padding:12px 16px; font-size:14px; line-height:1.5; }
+    button[slot="ar-button"] {
+      position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+      padding:12px 22px; border:0; border-radius:24px;
+      background:#fff; color:#111; font-size:15px; font-weight:600;
+    }
+  </style>
+</head>
+<body>
+  <model-viewer
+    src="personaje-billboard.glb"
+    alt="Personaje recortado como billboard"
+    ar
+    ar-modes="webxr scene-viewer"
+    ar-placement="floor"
+    camera-controls
+    shadow-intensity="0"
+    exposure="1">
+    <button slot="ar-button">Ver en tu espacio</button>
+  </model-viewer>
+
+  <div class="info">
+    Mide <strong>1.78 &times; 1.70 m</strong>. Gira la c&aacute;mara con el dedo:
+    al pasar de perfil desaparece, porque es un plano sin grosor.
+  </div>
+</body>
+</html>
